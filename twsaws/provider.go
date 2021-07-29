@@ -20,16 +20,19 @@ func Provider() *schema.Provider {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "default",
+				Description: "By default, operate against AWS.  Set to 'localstack' to use against a local localstack instance.  This is primarily intended for debugging.",
 			},
 			"default_key_expiry": &schema.Schema{
 				Type: schema.TypeString,
 				Optional: true,
 				Default: "30days",
+				Description: "Default maximum age of a key before the key is scheduled for deletion",
 			},
 			"default_key_grace": &schema.Schema{
 				Type: schema.TypeString,
 				Optional: true,
 				Default: "20days",
+				Description: "Default age at which we gracefully attempt to rotate out the key",
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{

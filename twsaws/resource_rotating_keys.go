@@ -18,17 +18,22 @@ func dataRotatingKeys()  *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
+				//TODO: should this include the path?
+				Description: "IAM name of the user to maintain active keys against",
 			},
 			"active_key_id": &schema.Schema{
 				Type: schema.TypeString,
 				Computed: true,
+				Description: "Active AWS Access Key ID to be utilized by clients",
 			},
 			"active_key_secret": &schema.Schema{
 				Type: schema.TypeString,
 				Computed: true,
 				Sensitive: true,
+				Description: "Active AWS Access Key Secret to be utilized by clients",
 			},
 		},
+		Description: "Manages a user's AWS access keys, attempting to gracefully rotate out aged keys while keeping an active key.",
 	}
 }
 
