@@ -6,7 +6,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/truewhitespace/key-rotation/awskeystore"
 	"github.com/truewhitespace/key-rotation/rotation"
-	"time"
 )
 
 func dataRotatingKeys()  *schema.Resource {
@@ -49,7 +48,7 @@ func planKeyStores(ctx context.Context, d *schema.ResourceData, m interface{}) (
 		return nil,nil, out
 	}
 
-	rotator, err := rotation.NewKeyRotation(1 * time.Minute, 3 * time.Second)
+	rotator, err := rotation.NewKeyRotation(cfg.defaultKeyExpiry, cfg.defaultKeyGrace)
 	if err != nil {
 		out = append(out, diag.Diagnostic{
 			Severity:      diag.Error,

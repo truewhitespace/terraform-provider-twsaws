@@ -9,6 +9,8 @@ terraform {
 
 provider "twsaws" {
   backend = "localstack"
+  default_key_expiry = "1m"
+  default_key_grace = "30s"
 }
 
 module "u" {

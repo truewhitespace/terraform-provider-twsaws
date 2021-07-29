@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/truewhitespace/key-rotation/awskeystore"
 	"github.com/truewhitespace/key-rotation/rotation"
+	"time"
 )
 
 // Provider -
@@ -19,6 +20,16 @@ func Provider() *schema.Provider {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "default",
+			},
+			"default_key_expiry": &schema.Schema{
+				Type: schema.TypeString,
+				Optional: true,
+				Default: "30days",
+			},
+			"default_key_grace": &schema.Schema{
+				Type: schema.TypeString,
+				Optional: true,
+				Default: "20days",
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
@@ -32,6 +43,8 @@ func Provider() *schema.Provider {
 
 type providerConfig struct {
 	backend string
+	defaultKeyExpiry time.Duration
+	defaultKeyGrace time.Duration
 }
 
 func (p *providerConfig) KeyStoreFor(username string) (rotation.KeyStore, error){
@@ -52,7 +65,17 @@ func (p *providerConfig) KeyStoreFor(username string) (rotation.KeyStore, error)
 }
 
 func configureProvider(ctx context.Context, data *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	return &providerConfig{
-		backend: data.Get("backend").(string),
-	}, nil
+	validator := &validationPhase{
+		data:     data,
+	}
+
+	provider :=  &providerConfig{}
+	provider.backend = validator.validateStringOneOf("backend", []string{"default","localstack"})
+	provider.defaultKeyGrace = validator.validateExtendedDuration("default_key_grace")
+	provider.defaultKeyExpiry = validator.validateExtendedDuration("default_key_expiry")
+
+	if validator.hasProblems() {
+		return nil, validator.problems
+	}
+	return provider, nil
 }
