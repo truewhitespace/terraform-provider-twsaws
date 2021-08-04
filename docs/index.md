@@ -8,7 +8,7 @@ description: |-
 
 # twsaws-terraform-provider Provider
 
-
+A set of Terraform AWS utilities to compliment Terraform's AWS backend.
 
 
 
