@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     twsaws = {
-      version = "0.1"
-      source  = "github.com/truewhitespace/twsaws"
+      version = "1.0.0"
+      source  = "truewhitespace/twsaws"
     }
   }
 }
